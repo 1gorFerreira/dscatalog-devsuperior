@@ -1,7 +1,7 @@
 package com.devsuperior.dscatalog.services;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,4 +35,11 @@ public class CategoryService {
 
 	}
 
+	@Transactional(readOnly = true)
+	public CategoryDTO findById(Long id) {
+		Optional<Category> obj = repository.findById(id); // Optional -> usado para evitar null;
+		Category entity = obj.get(); //.get obtem o objeto que estava dentro do Optional;
+		return new CategoryDTO(entity);
+	}
+	
 }
