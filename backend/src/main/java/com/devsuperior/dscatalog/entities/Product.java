@@ -40,7 +40,9 @@ public class Product implements Serializable{
 			inverseJoinColumns = @JoinColumn(name = "category_id")) //Inverse pega o tipo que estiver na coleção
 	Set<Category> categories = new HashSet<>();
 
-	public Product() {}
+	public Product() {
+		
+	}
 	
 	public Product(Long id, String name, String description, Double price, String imgUrl, Instant date) {
 		this.id = id;
