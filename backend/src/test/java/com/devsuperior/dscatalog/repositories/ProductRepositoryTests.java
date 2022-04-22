@@ -1,4 +1,4 @@
-package com.devsuperior.dscatalog.tests.repositories;
+package com.devsuperior.dscatalog.repositories;
 
 import java.util.Optional;
 
@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import com.devsuperior.dscatalog.entities.Product;
-import com.devsuperior.dscatalog.repositories.ProductRepository;
 import com.devsuperior.dscatalog.tests.factory.Factory;
 
 @DataJpaTest

@@ -1,4 +1,4 @@
-package com.devsuperior.dscatalog.tests.services;
+package com.devsuperior.dscatalog.services;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,6 @@ import com.devsuperior.dscatalog.entities.Category;
 import com.devsuperior.dscatalog.entities.Product;
 import com.devsuperior.dscatalog.repositories.CategoryRepository;
 import com.devsuperior.dscatalog.repositories.ProductRepository;
-import com.devsuperior.dscatalog.services.ProductService;
 import com.devsuperior.dscatalog.services.exceptions.DatabaseException;
 import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
 import com.devsuperior.dscatalog.tests.factory.Factory;
