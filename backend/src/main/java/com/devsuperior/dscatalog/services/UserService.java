@@ -4,11 +4,16 @@ import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devsuperior.dscatalog.dto.RoleDTO;
 import com.devsuperior.dscatalog.dto.UserDTO;
 import com.devsuperior.dscatalog.dto.UserInsertDTO;
+import com.devsuperior.dscatalog.dto.UserUpdateDTO;
 import com.devsuperior.dscatalog.entities.Role;
 import com.devsuperior.dscatalog.entities.User;
 import com.devsuperior.dscatalog.repositories.RoleRepository;
@@ -24,7 +30,9 @@ import com.devsuperior.dscatalog.services.exceptions.DatabaseException;
 import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService{
+	
+	private static Logger logger = LoggerFactory.getLogger(UserService.class);
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -58,7 +66,7 @@ public class UserService {
 	}
 	
 	@Transactional
-	public UserDTO update(Long id, UserDTO dto) {
+	public UserDTO update(Long id, UserUpdateDTO dto) {
 		try {
 			User entity = userRepository.getOne(id);
 			copyDtoToEntity(dto, entity);
@@ -89,5 +97,18 @@ public class UserService {
 			Role role = roleRepository.getOne(rolesDto.getId());
 			entity.getRoles().add(role);
 		}
+	}
+
+	//Método do Spring Security para retornar o userDetails, que na verdade será o user pois ele está implementando a interface UserDetails;
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		
+		User user = userRepository.findByEmail(username);
+		if (user == null) {
+			logger.error("User not found: " + username);
+			throw new UsernameNotFoundException("Email not found");
+		}
+		logger.info("User found: " + username);
+		return user;
 	}
 }
