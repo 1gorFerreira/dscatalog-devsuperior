@@ -1,5 +1,6 @@
 package com.devsuperior.dscatalog.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,11 +26,14 @@ public class AppConfig {
 		return new BCryptPasswordEncoder();
 	}
 	
+	@Value("${jwt.secret}") // Variável de ambiente configurada no application.properties para substituir o hardcode;
+	private String jwtSecret;
+	
 	//Beans para JWT: Configuração do JWTtoken, esses 2 Beans são objetos que serão capazes de acessar um token JWT (Ler, criar, etc);
 	@Bean
 	public JwtAccessTokenConverter accessTokenConverter() {
 		JwtAccessTokenConverter tokenConverter = new JwtAccessTokenConverter();
-		tokenConverter.setSigningKey("MY-JWT-SECRET");
+		tokenConverter.setSigningKey(jwtSecret);
 		return tokenConverter;
 	}
 
