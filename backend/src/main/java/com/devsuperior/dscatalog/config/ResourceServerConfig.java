@@ -1,7 +1,10 @@
 package com.devsuperior.dscatalog.config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -13,16 +16,18 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 	
+	//Environment é o ambiente de execução da sua aplicação. A partir desse objeto você consegue acessar várias variavéis interessantes;
+	@Autowired
+	private Environment env;
 	
 	//É necessário o tokenStore para configurar nos métodos;
 	@Autowired
 	private JwtTokenStore tokenStore;
 	
-	
 	//Constantes para usar na configuração (Por organização)
 	//OBS: /** -> Todo mundo a partir da rota;
 	
-	private static final String[] PUBLIC = { "/oauth/token" };//Quem vão ser os endpoints públicos?;
+	private static final String[] PUBLIC = { "/oauth/token", "/h2-console/**" };//Quem vão ser os endpoints públicos?;
 
 	private static final String[] OPERATOR_OR_ADMIN = { "/products/**", "/categories/**"}; //Quais rotas por padrão estarão liberadas tanto para operator quanto pra admin?;
 	
@@ -37,6 +42,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 	//Método para configurar as rotas;
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
+		
+		//Para liberar os frames do H2:
+		if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
+			http.headers().frameOptions().disable();
+		}
+		
 		http.authorizeRequests()
 		.antMatchers(PUBLIC).permitAll()
 		.antMatchers(HttpMethod.GET, OPERATOR_OR_ADMIN).permitAll()
