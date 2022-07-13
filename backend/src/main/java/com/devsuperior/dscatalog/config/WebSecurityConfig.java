@@ -35,6 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		web.ignoring().antMatchers("/actuator/**");//actuator -> Biblioteca usada pelo spring cloud oauth;
 	}
 
+	//Método da classe WebSecurityConfigurerAdapter que precisamos transformar em componente do sistema (usando o @Bean) para usar no AuthorizationServer;
 	@Override
 	@Bean
 	protected AuthenticationManager authenticationManager() throws Exception {

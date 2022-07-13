@@ -1,5 +1,7 @@
 package com.devsuperior.dscatalog.services;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
@@ -31,8 +33,9 @@ public class ProductService {
 	private CategoryRepository categoryRepository;
 	
 	@Transactional(readOnly = true)
-	public Page<ProductDTO> findAllPaged(Pageable pageable){
-		Page<Product> list = repository.findAll(pageable);
+	public Page<ProductDTO> findAllPaged(Long categoryId, String name, Pageable pageable){
+		List<Category> categories = (categoryId == 0) ? null : Arrays.asList(categoryRepository.getOne(categoryId));//Se o valor passado da categoria for 0, irá quebrar; Por isso o uso do ternário (Se categoryId for 0, devolva nulo, senão devolva categoryRepository...);
+		Page<Product> list = repository.find(categories, name, pageable);
 		
 		/*Recebendo os dados da entidade e passando para DTO.
 		List<ProductDTO> listDto = new ArrayList<>();

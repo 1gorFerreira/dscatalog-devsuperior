@@ -44,7 +44,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
 	public void configure(HttpSecurity http) throws Exception {
 		
 		//Para liberar os frames do H2:
-		if (Arrays.asList(env.getActiveProfiles()).contains("test")) {
+		if (Arrays.asList(env.getActiveProfiles()).contains("dev")) {
 			http.headers().frameOptions().disable();
 		}
 		
