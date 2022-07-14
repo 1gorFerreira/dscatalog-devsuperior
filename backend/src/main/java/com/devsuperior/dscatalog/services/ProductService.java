@@ -35,18 +35,9 @@ public class ProductService {
 	@Transactional(readOnly = true)
 	public Page<ProductDTO> findAllPaged(Long categoryId, String name, Pageable pageable){
 		List<Category> categories = (categoryId == 0) ? null : Arrays.asList(categoryRepository.getOne(categoryId));//Se o valor passado da categoria for 0, irá quebrar; Por isso o uso do ternário (Se categoryId for 0, devolva nulo, senão devolva categoryRepository...);
-		Page<Product> list = repository.find(categories, name, pageable);
-		
-		/*Recebendo os dados da entidade e passando para DTO.
-		List<ProductDTO> listDto = new ArrayList<>();
-		for(Product cat : list) {
-			listDto.add(new ProductDTO(cat));
-		}
-		
-		List<ProductDTO> listDto = list.stream().map(x -> new ProductDTO(x)).collect(Collectors.toList());
-		*/
-		
-		return list.map(x -> new ProductDTO(x)); //Page já é um stream do Java8;
+		Page<Product> page = repository.find(categories, name, pageable);
+		repository.findProductsWithCategories(page.getContent());//O getContent já converte o page para lista;
+		return page.map(x -> new ProductDTO(x, x.getCategories())); //Page já é um stream do Java8;
 
 	}
 
